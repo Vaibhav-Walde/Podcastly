@@ -15,7 +15,7 @@ export default function JoinSession() {
     setLoading(true);
     try {
       const res = await joinSession(sessionCode);
-      const sessionId = res.data.session?.id;
+      const sessionId = res.data.sessionId;
       navigate('/nreceiver', { state: { sessionCode, sessionId } });
     } catch (err: any) {
       setError(err?.response?.data?.msg || 'Invalid session code');

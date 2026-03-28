@@ -16,7 +16,7 @@ export default function Signup() {
     if (!name || !email || !password) { setError('All fields required'); return; }
     setLoading(true); setError('');
     try {
-      const res = await signUp(name, email, password);
+      await signUp(name, email, password);
       navigate('/login');
     } catch (err: any) {
       setError(err?.response?.data?.msg || 'Something went wrong');
