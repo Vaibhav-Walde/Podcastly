@@ -1,0 +1,83 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@300;400;500;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap');
+
+:root {
+  --black: #050505;
+  --surface: #0a0a0a;
+  --surface2: #111111;
+  --surface3: #1a1a1a;
+  --surface4: #222222;
+  --border: rgba(255,255,255,0.06);
+  --border2: rgba(255,255,255,0.12);
+  --border3: rgba(255,255,255,0.2);
+  --text: #f5f0eb;
+  --muted: rgba(245,240,235,0.4);
+  --dim: rgba(245,240,235,0.18);
+  --red: #ff2d3b;
+  --red2: #cc1a26;
+  --red-glow: rgba(255,45,59,0.2);
+  --red-dim: rgba(255,45,59,0.07);
+  --amber: #ffaa00;
+  --green: #00e676;
+  --cyan: #00d4ff;
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-body: 'DM Sans', sans-serif;
+  --ease: cubic-bezier(0.4,0,0.2,1);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--text);font-family:var(--font-body);overflow-x:hidden}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--surface)}
+::-webkit-scrollbar-thumb{background:var(--surface4);border-radius:2px}
+
+/* Scanline overlay effect */
+body::before{
+  content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);
+}
+
+/* Grain */
+body::after{
+  content:'';position:fixed;inset:0;z-index:9998;pointer-events:none;opacity:0.025;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+}
+
+/* Core animations */
+@keyframes fadeUp{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideRight{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:none}}
+@keyframes blink{0%,100%{opacity:1}45%,55%{opacity:0}}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.06);opacity:0.7}}
+@keyframes wave{from{height:4px}to{height:28px}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes glitch{
+  0%,100%{clip-path:inset(0 0 100% 0);transform:translateX(0)}
+  10%{clip-path:inset(10% 0 80% 0);transform:translateX(-4px)}
+  20%{clip-path:inset(30% 0 60% 0);transform:translateX(4px)}
+  30%{clip-path:inset(50% 0 40% 0);transform:translateX(-2px)}
+  40%{clip-path:inset(70% 0 20% 0);transform:translateX(2px)}
+  50%{clip-path:inset(90% 0 0% 0);transform:translateX(0)}
+}
+@keyframes recPulse{0%,100%{box-shadow:0 0 0 0 var(--red-glow)}50%{box-shadow:0 0 0 12px rgba(255,45,59,0)}}
+@keyframes borderGlow{0%,100%{border-color:rgba(255,45,59,0.3)}50%{border-color:rgba(255,45,59,0.8)}}
+@keyframes ticker{from{transform:translateX(100%)}to{transform:translateX(-100%)}}
+@keyframes countUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+.anim-fadeUp{animation:fadeUp 0.6s var(--ease) both}
+.anim-fadeUp-1{animation:fadeUp 0.6s 0.08s var(--ease) both}
+.anim-fadeUp-2{animation:fadeUp 0.6s 0.16s var(--ease) both}
+.anim-fadeUp-3{animation:fadeUp 0.6s 0.24s var(--ease) both}
+.anim-fadeUp-4{animation:fadeUp 0.6s 0.32s var(--ease) both}
+.anim-fadeUp-5{animation:fadeUp 0.6s 0.40s var(--ease) both}
+.anim-slideRight{animation:slideRight 0.5s var(--ease) both}
+
+/* Shared component styles */
+.glass{background:rgba(255,255,255,0.03);border:1px solid var(--border);backdrop-filter:blur(12px)}
+.glass2{background:rgba(255,255,255,0.05);border:1px solid var(--border2);backdrop-filter:blur(16px)}
+.red-glow-text{text-shadow:0 0 30px rgba(255,45,59,0.5)}
+.nav-height{padding-top:68px}
