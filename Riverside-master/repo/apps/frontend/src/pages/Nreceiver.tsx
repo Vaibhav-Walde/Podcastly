@@ -18,7 +18,7 @@ function Waveform({ active, color = 'var(--amber)', bars = 14 }: { active: boole
 }
 
 export default function NReceiver() {
-  // ── All original state ──
+  // ── State ──
   const videoRef = useRef<HTMLVideoElement>(null);
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const [, setSocket] = useState<WebSocket>();
@@ -43,7 +43,7 @@ export default function NReceiver() {
   const roomName = location?.state?.sessionCode;
   const sessionId = location?.state?.sessionId;
 
-  // ── All original useEffects ──
+  // ── Effects ──
   useEffect(() => {
     if (!roomName || !sessionId) { navigate('/'); return; }
     setRoomId(roomName);

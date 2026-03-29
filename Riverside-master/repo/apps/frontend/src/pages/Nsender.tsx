@@ -39,7 +39,7 @@ function VUMeter({ active }: { active: boolean }) {
 }
 
 export default function NSender() {
-  // ── All original state ──
+  // ── State ──
   const [socket, setSocket] = useState<WebSocket>();
   const [, setRoomId] = useState<string | null>(null);
   const [, setStream] = useState<MediaStream | any>();
@@ -67,7 +67,7 @@ export default function NSender() {
   const roomName = location?.state?.sessionCode;
   const sessionId = location?.state?.sessionid;
 
-  // ── All original useEffects ──
+  // ── Effects ──
   useEffect(() => {
     if (!roomName || !sessionId) { navigate('/'); return; }
     setRoomId(roomName);
@@ -93,7 +93,7 @@ export default function NSender() {
     if (isMerged === true) getAllVideos();
   }, [isMerged]);
 
-  // ── All original functions ──
+  // ── Functions ──
   const formatDuration = (s: number) => {
     const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60;
     return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
