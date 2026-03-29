@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE = 'http://localhost:3001/api/v1';
+const BASE = import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api/v1` : 'http://localhost:3001/api/v1';
 const getToken = () => localStorage.getItem('JWT');
 const auth = () => ({ headers: { Authorization: `Bearer ${getToken()}` } });
 
