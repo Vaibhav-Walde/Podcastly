@@ -47,7 +47,7 @@ export default function NReceiver() {
   useEffect(() => {
     if (!roomName || !sessionId) { navigate('/'); return; }
     setRoomId(roomName);
-    const ws = new WebSocket('ws://localhost:8080');
+    const ws = new WebSocket('wss://podcastly-ws.onrender.com');
     ws.onopen = () => {
       if (roomName) { ws.send(JSON.stringify({ type: "receiver", roomId: roomName })); setSocket(ws); setIsConnected(true); setConnectionStatus("Connected"); }
     };
