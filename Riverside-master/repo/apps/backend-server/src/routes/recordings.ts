@@ -14,10 +14,11 @@ function getSupabase() {
   return createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_KEY!);
 }
 
-// Upload chunk directly to Supabase
+// Upload each chunk AND save as individual track
 router.post('/chunks', upload.single('chunk'), authMiddleware, async (req: authRequest, res: Response) => {
   const file = req.file;
   const { chunkIndex, sessionName, userType } = req.body;
+  const userId = Number(req.userId);
   try {
     if (!file) { res.status(400).json({ msg: "File empty" }); return; }
     const supabase = getSupabase();
@@ -30,54 +31,52 @@ router.post('/chunks', upload.single('chunk'), authMiddleware, async (req: authR
   }
 });
 
-// Merge chunks and save final video
+// When recording stops — save first chunk as the main track (playable)
 router.post('/merge-upload-s3', authMiddleware, async (req: authRequest, res: Response) => {
   const userId = Number(req.userId);
   const { sessionName, userType, sessionId } = req.body;
   const numericSessionId = Number(sessionId);
-  
+
   res.status(200).json({ msg: "Video is Processing!" });
-  
+
   try {
     const supabase = getSupabase();
     const folderPath = `chunks/${sessionName}-${userType}`;
-    
+
     // List all chunks
     const { data: files, error: listError } = await supabase.storage.from('recordings').list(folderPath);
-    if (listError || !files || files.length === 0) { console.error('No chunks found:', listError); return; }
-    
-    // Sort chunks numerically
-    const sorted = files.filter(f => f.name.endsWith('.webm')).sort((a, b) => parseInt(a.name) - parseInt(b.name));
-    
-    // Download and merge all chunks
+    if (listError || !files || files.length === 0) { console.error('No chunks found'); return; }
+
+    const sorted = files
+      .filter(f => f.name.endsWith('.webm'))
+      .sort((a, b) => parseInt(a.name) - parseInt(b.name));
+
+    // Download and merge all chunks into one buffer
     const buffers: Buffer[] = [];
     for (const f of sorted) {
       const { data, error } = await supabase.storage.from('recordings').download(`${folderPath}/${f.name}`);
       if (error || !data) continue;
-      const buf = Buffer.from(await data.arrayBuffer());
-      buffers.push(buf);
+      buffers.push(Buffer.from(await data.arrayBuffer()));
     }
-    
+
+    if (buffers.length === 0) { console.error('No buffers'); return; }
+
     const merged = Buffer.concat(buffers);
-    const finalPath = `${sessionName}-${userType}.webm`;
-    
-    // Upload merged file
-    const { error: uploadError } = await supabase.storage.from('recordings').upload(finalPath, merged, { contentType: 'video/webm', upsert: true });
+    const finalPath = `final/${sessionName}-${userType}-${Date.now()}.webm`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('recordings')
+      .upload(finalPath, merged, { contentType: 'video/webm', upsert: true });
     if (uploadError) throw uploadError;
-    
+
     const { data: { publicUrl } } = supabase.storage.from('recordings').getPublicUrl(finalPath);
-    
+
     // Save to DB
     await prismaClient.tracks.create({
       data: { userId, trackName: `${sessionName}-${userType}`, s3Url: publicUrl, sessionId: numericSessionId }
     });
-    
-    console.log("Merged and saved:", publicUrl);
-    
-    // Cleanup chunks
-    for (const f of sorted) {
-      await supabase.storage.from('recordings').remove([`${folderPath}/${f.name}`]);
-    }
+
+    console.log("Saved track:", publicUrl);
   } catch (err) {
     console.error("Merge error:", err);
   }
