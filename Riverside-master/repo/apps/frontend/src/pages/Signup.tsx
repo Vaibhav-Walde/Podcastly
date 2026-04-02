@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { signUp } from '../api/api';
+import { signUp, login } from '../api/api';
 import Navbar from '../components/Navbar';
 
 export default function Signup() {
@@ -17,9 +17,12 @@ export default function Signup() {
     setLoading(true); setError('');
     try {
       await signUp(name, email, password);
-      navigate('/login');
+      // Auto-login after signup
+      const loginRes = await login(email, password);
+      localStorage.setItem('JWT', loginRes.data.token);
+      navigate('/dashboard');
     } catch (err: any) {
-      setError(err?.response?.data?.msg || 'Something went wrong');
+      setError(String(err?.response?.data?.msg || 'Something went wrong'));
       setLoading(false);
     }
   }
@@ -86,7 +89,7 @@ export default function Signup() {
                 {[
                   ['LOCAL RECORDING', 'Device-level capture means zero internet quality loss. Ever.'],
                   ['WEBRTC ENGINE', 'Sub-50ms peer-to-peer connections. Real broadcast feel.'],
-                  ['S3 AUTO-UPLOAD', 'Chunks upload live. BullMQ merges everything when done.'],
+                  ['CLOUD BACKUP', 'Chunks upload live. Recordings saved securely in the cloud.'],
                 ].map(([title, desc]) => (
                   <div key={title} style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
                     <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--red)', marginTop: 6, flexShrink: 0, animation: 'pulse 2s ease-in-out infinite' }} />
