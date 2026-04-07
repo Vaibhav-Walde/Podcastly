@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt';
 import express from "express";
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
@@ -35,7 +36,7 @@ router.post("/signup", async (req: Request, res: Response) => {
     }
 
     await prismaClient.user.create({
-      data: { name, email, password },
+      data: { name, email, password: await bcrypt.hash(password, 10) },
     });
 
     res.status(200).json({ msg: "User SignUp Successfully!" });
@@ -65,7 +66,7 @@ router.post("/signin", async (req: Request, res: Response) => {
       return;
     }
 
-    if (password !== user.password) {
+    if (!(await bcrypt.compare(password, user.password))) {
       res.status(400).json({ msg: "Invalid Credentials!" });
       return;
     }

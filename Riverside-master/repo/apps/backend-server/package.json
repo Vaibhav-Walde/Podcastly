@@ -14,13 +14,15 @@
     "@repo/typescript-config": "*",
     "@supabase/supabase-js": "^2.100.1",
     "@types/multer": "^1.4.12",
+    "bcrypt": "^6.0.0",
     "ioredis": "^5.6.1",
     "jsonwebtoken": "^9.0.2",
     "multer": "^1.4.5-lts.2"
   },
   "devDependencies": {
     "@repo/common": "*",
-    "@repo/db": "*"
+    "@repo/db": "*",
+    "@types/bcrypt": "^6.0.0"
   },
   "keywords": [],
   "author": "",
