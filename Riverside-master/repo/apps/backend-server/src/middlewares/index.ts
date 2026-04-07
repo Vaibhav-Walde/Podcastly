@@ -25,7 +25,7 @@ export async function authMiddleware(req: authRequest, res: Response, next: Next
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
+    const decoded = jwt.verify(token, JWT_SECRET as string) as JwtPayload;
     req.userId = String(decoded.userId);
     next();
   } catch (error) {
