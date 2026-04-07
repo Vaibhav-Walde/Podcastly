@@ -1,40 +1,34 @@
-import { Request,Response,NextFunction } from "express";
+import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import dotenv from "dotenv"
+import dotenv from "dotenv";
 dotenv.config();
+
 const JWT_SECRET = process.env.JWT_SECRET;
 
-
-interface authRequest extends Request{
-    userId?:string;
+interface authRequest extends Request {
+  userId?: string;
 }
 
+export async function authMiddleware(req: authRequest, res: Response, next: NextFunction) {
+  const authHeader = req.headers["authorization"];
 
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    res.status(401).json({ msg: "Unauthorized: Missing or invalid authorization header" });
+    return;
+  }
 
-export async function authMiddleware(req:authRequest,res:Response,next:NextFunction){
-    const authHeaders = req.headers["authorization"];
-    console.log(authHeaders);
+  const token = authHeader.split(" ")[1];
 
-    if(!authHeaders || !authHeaders.startsWith('Bearer ') ){
-        res.json({msg:"Invalid AuthHeaders"});
-        return;
-    }
+  if (!JWT_SECRET) {
+    res.status(500).json({ msg: "Server configuration error: JWT secret not set" });
+    return;
+  }
 
-    const token = authHeaders?.split(' ')[1];
-    console.log(token);
-    try{
-        
-        // decode token
-        if(token && JWT_SECRET){
-            const decoded= jwt.verify(token,JWT_SECRET) as JwtPayload ;
-            req.userId = decoded.userId;            
-            next();
-        }
-        
-    }catch(error){
-        res.status(400).json({msg:"JWT ERROR:",error});
-    }
-    
-    
-
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
+    req.userId = String(decoded.userId);
+    next();
+  } catch (error) {
+    res.status(401).json({ msg: "Unauthorized: Invalid or expired token" });
+  }
 }

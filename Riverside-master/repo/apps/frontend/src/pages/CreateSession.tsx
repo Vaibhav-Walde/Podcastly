@@ -1,4 +1,3 @@
-// CreateSession.tsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createSession } from '../api/api';
@@ -12,7 +11,7 @@ export default function CreateSession() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!sessionName.trim()) { setError('Session name required'); return; }
+    if (!sessionName.trim()) { setError('Session name is required'); return; }
     setLoading(true);
     try {
       const res = await createSession(sessionName);
@@ -25,45 +24,60 @@ export default function CreateSession() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--black)' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex', flexDirection: 'column' }}>
       <Navbar loggedIn />
-      <div style={{ minHeight: '100vh', paddingTop: 68, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '100px 2rem 3rem', position: 'relative' }}>
-        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 50% 40% at 50% 50%, rgba(255,45,59,0.06), transparent)', pointerEvents: 'none' }} />
-        <div className="anim-fadeUp" style={{ background: 'var(--surface)', border: '1px solid var(--border2)', borderRadius: 16, padding: '3rem', width: '100%', maxWidth: 560, position: 'relative', zIndex: 1 }}>
-          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, background: 'var(--red)', borderRadius: '16px 16px 0 0' }} />
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6rem', letterSpacing: '0.14em', color: 'var(--red)', marginBottom: '1rem' }}>// NEW BROADCAST</div>
-          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '2.8rem', letterSpacing: '0.04em', lineHeight: 0.95, marginBottom: '0.5rem' }}>CREATE<br />SESSION</h1>
-          <p style={{ fontSize: '0.875rem', color: 'var(--muted)', marginBottom: '2.5rem', fontWeight: 300 }}>Set up your studio. Guests will join via the session code generated after creation.</p>
+      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '100px 2rem 3rem' }}>
+        <div className="anim-fadeUp" style={{ width: '100%', maxWidth: 460 }}>
 
-          {error && <div style={{ background: 'rgba(255,45,59,0.08)', border: '1px solid rgba(255,45,59,0.3)', borderRadius: 6, padding: '12px', fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'var(--red)', letterSpacing: '0.06em', marginBottom: '1.5rem' }}>⚠ {error.toUpperCase()}</div>}
+          <h1 style={{ fontSize: '1.75rem', fontWeight: 700, letterSpacing: '-0.02em', marginBottom: '0.5rem' }}>
+            Create a session
+          </h1>
+          <p style={{ fontSize: '0.875rem', color: 'var(--secondary)', marginBottom: '2rem' }}>
+            Set up your studio. Guests join via the session code generated after creation.
+          </p>
+
+          {error && (
+            <div style={{
+              background: 'rgba(255,55,95,0.08)', border: '1px solid rgba(255,55,95,0.2)',
+              borderRadius: 10, padding: '12px 16px', fontSize: '0.8rem',
+              color: 'var(--accent)', marginBottom: '1.5rem',
+            }}>
+              {error}
+            </div>
+          )}
 
           <form onSubmit={handleSubmit}>
-            {[
-              { label: 'SESSION NAME', type: 'text', val: sessionName, set: setSessionName, ph: 'e.g. Tech Trends Ep. 14' },
-            ].map(f => (
-              <div key={f.label} style={{ marginBottom: '1.25rem' }}>
-                <label style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6rem', letterSpacing: '0.1em', color: 'var(--dim)', display: 'block', marginBottom: 6 }}>{f.label}</label>
-                <input type={f.type} style={{ width: '100%', padding: '13px 16px', background: 'var(--surface3)', border: '1px solid var(--border2)', borderRadius: 6, color: 'var(--text)', fontFamily: 'var(--font-body)', fontSize: '0.9rem', outline: 'none' }} placeholder={f.ph} value={f.val} onChange={e => f.set(e.target.value)}
-                  onFocus={e => e.currentTarget.style.borderColor = 'rgba(255,45,59,0.5)'}
-                  onBlur={e => e.currentTarget.style.borderColor = 'var(--border2)'} />
-              </div>
-            ))}
-            {[
-              { label: 'RECORDING QUALITY', opts: ['1080p HD (Recommended)', '720p', '4K Ultra'] },
-              { label: 'MAX PARTICIPANTS', opts: ['2 participants', '5 participants', '8 participants'] },
-            ].map(f => (
-              <div key={f.label} style={{ marginBottom: '1.25rem' }}>
-                <label style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6rem', letterSpacing: '0.1em', color: 'var(--dim)', display: 'block', marginBottom: 6 }}>{f.label}</label>
-                <select style={{ width: '100%', padding: '13px 16px', background: 'var(--surface3)', border: '1px solid var(--border2)', borderRadius: 6, color: 'var(--text)', fontFamily: 'var(--font-body)', fontSize: '0.9rem', outline: 'none', cursor: 'pointer' }}>
-                  {f.opts.map(o => <option key={o}>{o}</option>)}
-                </select>
-              </div>
-            ))}
-            <button type="submit" disabled={loading} style={{ width: '100%', padding: '14px', background: 'var(--red)', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontFamily: 'var(--font-display)', fontSize: '1.1rem', letterSpacing: '0.1em', marginTop: '1.5rem', boxShadow: '0 0 24px rgba(255,45,59,0.3)', opacity: loading ? 0.7 : 1 }}>
-              {loading ? 'LAUNCHING...' : '⏺ LAUNCH SESSION →'}
+            <div style={{ marginBottom: '1.25rem' }}>
+              <label style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--secondary)', display: 'block', marginBottom: 6 }}>Session name</label>
+              <input type="text" placeholder="e.g. Tech Trends Ep. 14"
+                value={sessionName} onChange={e => setSessionName(e.target.value)}
+                style={{
+                  width: '100%', padding: '14px 16px', background: 'var(--surface)',
+                  border: '1px solid var(--border)', borderRadius: 12, color: 'var(--text)',
+                  fontFamily: 'var(--font)', fontSize: '0.9rem', outline: 'none',
+                  transition: 'border-color 0.2s, box-shadow 0.2s',
+                }}
+                onFocus={e => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(255,55,95,0.1)'; }}
+                onBlur={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.boxShadow = 'none'; }}
+              />
+            </div>
+
+            <button type="submit" disabled={loading} style={{
+              width: '100%', padding: '14px', background: 'var(--accent)', color: 'white',
+              border: 'none', borderRadius: 12, cursor: loading ? 'wait' : 'pointer',
+              fontFamily: 'var(--font)', fontSize: '0.95rem', fontWeight: 600,
+              transition: 'opacity 0.2s', opacity: loading ? 0.7 : 1,
+              marginTop: '0.5rem',
+            }}>
+              {loading ? 'Creating...' : 'Launch Session'}
             </button>
-            <button type="button" onClick={() => navigate('/dashboard')} style={{ width: '100%', padding: '13px', background: 'transparent', color: 'var(--muted)', border: '1px solid var(--border)', borderRadius: 6, cursor: 'pointer', fontFamily: 'var(--font-display)', fontSize: '0.85rem', letterSpacing: '0.08em', marginTop: '0.75rem' }}>
-              ← BACK TO DASHBOARD
+            <button type="button" onClick={() => navigate('/dashboard')} style={{
+              width: '100%', padding: '13px', background: 'transparent',
+              color: 'var(--secondary)', border: '1px solid var(--border)',
+              borderRadius: 12, cursor: 'pointer', fontFamily: 'var(--font)',
+              fontSize: '0.85rem', fontWeight: 500, marginTop: '0.5rem',
+            }}>
+              ← Back to Dashboard
             </button>
           </form>
         </div>

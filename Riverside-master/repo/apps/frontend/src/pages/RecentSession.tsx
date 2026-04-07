@@ -20,73 +20,95 @@ export default function RecentSession() {
     setLoading(false); setFetched(true);
   }
 
-  const accents = [
-    { color: 'var(--red)', bg: 'rgba(255,45,59,0.1)', border: 'rgba(255,45,59,0.25)' },
-    { color: 'var(--amber)', bg: 'rgba(255,170,0,0.1)', border: 'rgba(255,170,0,0.25)' },
-    { color: 'var(--cyan)', bg: 'rgba(0,212,255,0.1)', border: 'rgba(0,212,255,0.25)' },
-    { color: 'var(--green)', bg: 'rgba(0,230,118,0.1)', border: 'rgba(0,230,118,0.25)' },
-  ];
-
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--black)' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)' }}>
       <Navbar loggedIn />
-      <div style={{ maxWidth: 1000, margin: '0 auto', padding: '100px 2rem 3rem' }}>
-        <button onClick={() => navigate('/dashboard')} style={{ background: 'none', border: 'none', color: 'var(--muted)', cursor: 'pointer', fontFamily: 'var(--font-display)', fontSize: '0.75rem', letterSpacing: '0.08em', marginBottom: '2rem', padding: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
-          ← BACK TO DASHBOARD
-        </button>
+      <div style={{ maxWidth: 900, margin: '0 auto', padding: '120px 2rem 4rem' }}>
+        <button onClick={() => navigate('/dashboard')} style={{
+          background: 'none', border: 'none', color: 'var(--secondary)',
+          cursor: 'pointer', fontSize: '0.85rem', fontWeight: 500,
+          marginBottom: '2rem', padding: 0, fontFamily: 'var(--font)',
+          display: 'flex', alignItems: 'center', gap: 6,
+        }}>← Back to Dashboard</button>
 
-        <div className="anim-fadeUp" style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: '3rem', flexWrap: 'wrap', gap: '1.5rem' }}>
+        <div className="anim-fadeUp" style={{
+          display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end',
+          marginBottom: '2.5rem', flexWrap: 'wrap', gap: '1.5rem',
+        }}>
           <div>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6rem', letterSpacing: '0.14em', color: 'var(--red)', marginBottom: '0.75rem' }}>// SESSION RECORDINGS</div>
-            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '3rem', letterSpacing: '0.04em', lineHeight: 0.95 }}>TRACK<br />LIBRARY</h1>
+            <h1 style={{ fontSize: '2rem', fontWeight: 700, letterSpacing: '-0.02em', marginBottom: '0.25rem' }}>Track Library</h1>
+            <p style={{ fontSize: '0.875rem', color: 'var(--secondary)' }}>
+              {fetched ? `${recs.length} tracks found` : 'Load tracks from this session'}
+            </p>
           </div>
-          <button onClick={load} disabled={loading} style={{ padding: '12px 28px', background: fetched ? 'transparent' : 'var(--red)', color: fetched ? 'var(--text)' : 'white', border: fetched ? '1px solid var(--border2)' : 'none', borderRadius: 6, cursor: 'pointer', fontFamily: 'var(--font-display)', fontSize: '0.85rem', letterSpacing: '0.1em', boxShadow: fetched ? 'none' : '0 0 20px rgba(255,45,59,0.3)', opacity: loading ? 0.7 : 1 }}>
-            {loading ? 'LOADING...' : fetched ? '↺ REFRESH' : '⬇ LOAD TRACKS'}
+          <button onClick={load} disabled={loading} style={{
+            padding: '10px 24px', background: fetched ? 'transparent' : 'var(--accent)',
+            color: fetched ? 'var(--text)' : 'white',
+            border: fetched ? '1px solid var(--border)' : 'none',
+            borderRadius: 10, cursor: 'pointer', fontFamily: 'var(--font)',
+            fontSize: '0.85rem', fontWeight: 600, opacity: loading ? 0.7 : 1,
+            transition: 'all 0.2s',
+          }}>
+            {loading ? 'Loading...' : fetched ? '↻ Refresh' : '↓ Load Tracks'}
           </button>
         </div>
 
         {!fetched && (
-          <div className="anim-fadeUp-1" style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12, padding: '5rem 2rem', textAlign: 'center' }}>
-            <div style={{ fontFamily: 'var(--font-display)', fontSize: '3rem', letterSpacing: '0.04em', color: 'var(--dim)', marginBottom: '1rem' }}>⏺</div>
-            <div style={{ fontFamily: 'var(--font-display)', fontSize: '1rem', letterSpacing: '0.06em', marginBottom: '0.5rem' }}>TRACKS READY TO LOAD</div>
-            <p style={{ fontSize: '0.8rem', color: 'var(--muted)', fontFamily: 'var(--font-mono)' }}>Click "LOAD TRACKS" to fetch recordings from this session</p>
+          <div className="anim-fadeUp-1" style={{
+            background: 'var(--surface)', border: '1px solid var(--border)',
+            borderRadius: 16, padding: '5rem 2rem', textAlign: 'center',
+          }}>
+            <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>🎙</div>
+            <div style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '0.35rem' }}>Tracks ready to load</div>
+            <p style={{ fontSize: '0.85rem', color: 'var(--secondary)' }}>Click "Load Tracks" to fetch recordings from this session</p>
           </div>
         )}
 
         {fetched && recs.length === 0 && (
-          <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12, padding: '5rem 2rem', textAlign: 'center' }}>
-            <div style={{ fontFamily: 'var(--font-display)', fontSize: '1rem', letterSpacing: '0.06em', marginBottom: '0.5rem' }}>NO TRACKS FOUND</div>
-            <p style={{ fontSize: '0.8rem', color: 'var(--muted)', fontFamily: 'var(--font-mono)' }}>Session may still be processing or has no recordings</p>
+          <div style={{
+            background: 'var(--surface)', border: '1px solid var(--border)',
+            borderRadius: 16, padding: '5rem 2rem', textAlign: 'center',
+          }}>
+            <div style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '0.35rem' }}>No tracks found</div>
+            <p style={{ fontSize: '0.85rem', color: 'var(--secondary)' }}>Session may still be processing</p>
           </div>
         )}
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          {recs.map((rec, idx) => {
-            const a = accents[idx % accents.length];
-            return (
-              <div key={rec.id} className="anim-fadeUp" style={{ background: 'var(--surface)', border: `1px solid ${a.border}`, borderRadius: 12, overflow: 'hidden', borderLeft: `4px solid ${a.color}` }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', alignItems: 'center', padding: '1.25rem 1.5rem', gap: '1rem' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                    <div style={{ width: 40, height: 40, borderRadius: 8, background: a.bg, border: `1px solid ${a.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-display)', fontSize: '0.9rem', color: a.color, flexShrink: 0 }}>
-                      {String(idx + 1).padStart(2, '0')}
-                    </div>
-                    <div>
-                      <div style={{ fontWeight: 500, fontSize: '0.9rem', marginBottom: 2 }}>{rec.trackName || `Track ${idx + 1}`}</div>
-                      <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6rem', letterSpacing: '0.08em', color: 'var(--dim)' }}>
-                        USER {rec.userId} · SESSION {rec.sessionId} · <span style={{ color: 'var(--green)' }}>S3 UPLOADED ✓</span>
-                      </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+          {recs.map((rec, idx) => (
+            <div key={rec.id} className="anim-fadeUp" style={{
+              background: 'var(--surface)', border: '1px solid var(--border)',
+              borderRadius: 14, overflow: 'hidden',
+            }}>
+              <div style={{
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                padding: '1rem 1.25rem',
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <div style={{
+                    width: 36, height: 36, borderRadius: 10, background: 'var(--accent-soft)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: '0.75rem', fontFamily: 'var(--mono)', fontWeight: 600, color: 'var(--accent)',
+                  }}>{String(idx + 1).padStart(2, '0')}</div>
+                  <div>
+                    <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>{rec.trackName || `Track ${idx + 1}`}</div>
+                    <div style={{ fontFamily: 'var(--mono)', fontSize: '0.7rem', color: 'var(--tertiary)', marginTop: 2 }}>
+                      User {rec.userId} · <span style={{ color: 'var(--green)' }}>Uploaded ✓</span>
                     </div>
                   </div>
-                  <a href={rec.s3Url} download={`track-${idx + 1}-session-${sessionId}.webm`} style={{ padding: '8px 16px', borderRadius: 6, background: 'var(--surface3)', color: 'var(--text)', border: '1px solid var(--border2)', fontFamily: 'var(--font-display)', fontSize: '0.72rem', letterSpacing: '0.08em', textDecoration: 'none', display: 'inline-block' }}>
-                    ⬇ DOWNLOAD
-                  </a>
                 </div>
-                <div style={{ borderTop: `1px solid ${a.border}` }}>
-                  <video src={rec.s3Url} controls style={{ width: '100%', maxHeight: 300, background: 'var(--black)', display: 'block' }} />
-                </div>
+                <a href={rec.s3Url} download={`track-${idx + 1}-session-${sessionId}.webm`} style={{
+                  padding: '7px 14px', borderRadius: 8, background: 'var(--surface2)',
+                  color: 'var(--text)', border: '1px solid var(--border)',
+                  fontSize: '0.8rem', fontWeight: 600, textDecoration: 'none',
+                  fontFamily: 'var(--font)', transition: 'all 0.2s',
+                }}>↓ Download</a>
               </div>
-            );
-          })}
+              <div style={{ borderTop: '1px solid var(--border)' }}>
+                <video src={rec.s3Url} controls style={{ width: '100%', maxHeight: 280, background: '#000', display: 'block' }} />
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>

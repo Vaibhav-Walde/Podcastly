@@ -2,73 +2,8 @@ import { Link } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import Navbar from '../components/Navbar';
 
-function Waveform({ color = 'var(--red)', bars = 12, active = true }: { color?: string; bars?: number; active?: boolean }) {
-  return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 3, height: 36 }}>
-      {Array.from({ length: bars }).map((_, i) => (
-        <div key={i} style={{
-          width: 3, borderRadius: 2, background: color,
-          animation: active ? `wave ${0.5 + (i % 4) * 0.2}s ease-in-out infinite alternate` : 'none',
-          height: active ? undefined : 5,
-          animationDelay: `${i * 0.06}s`,
-        }} />
-      ))}
-    </div>
-  );
-}
-
-function Ticker() {
-  const items = ['STUDIO-QUALITY RECORDING', 'WEBRTC PEER-TO-PEER', 'LOCAL-FIRST CAPTURE', 'SUPABASE CLOUD BACKUP', 'BULLMQ PROCESSING', 'ZERO QUALITY LOSS', 'SEPARATE AUDIO TRACKS', 'REAL-TIME SIGNALING'];
-  return (
-    <div style={{ background: 'var(--red)', overflow: 'hidden', padding: '7px 0', position: 'relative' }}>
-      <div style={{ display: 'flex', animation: 'ticker 30s linear infinite', whiteSpace: 'nowrap', width: 'max-content' }}>
-        {[...items, ...items].map((item, i) => (
-          <span key={i} style={{ fontFamily: 'var(--font-display)', fontSize: '0.8rem', letterSpacing: '0.12em', color: 'white', padding: '0 2.5rem', opacity: 0.9 }}>
-            {item} <span style={{ opacity: 0.5 }}>◆</span>
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function StudioClock() {
-  const [time, setTime] = useState(new Date());
-  useEffect(() => { const t = setInterval(() => setTime(new Date()), 1000); return () => clearInterval(t); }, []);
-  const pad = (n: number) => n.toString().padStart(2, '0');
-  return (
-    <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.68rem', color: 'var(--muted)', letterSpacing: '0.1em' }}>
-      {pad(time.getHours())}:{pad(time.getMinutes())}:{pad(time.getSeconds())}
-    </div>
-  );
-}
-
-// 3D floating orbs background
-function FloatingOrbs() {
-  return (
-    <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 0 }}>
-      {[
-        { size: 600, x: '60%', y: '20%', color: 'rgba(255,45,59,0.08)', delay: '0s', duration: '8s' },
-        { size: 400, x: '10%', y: '60%', color: 'rgba(255,170,0,0.04)', delay: '2s', duration: '12s' },
-        { size: 300, x: '80%', y: '70%', color: 'rgba(0,212,255,0.04)', delay: '4s', duration: '10s' },
-      ].map((orb, i) => (
-        <div key={i} style={{
-          position: 'absolute',
-          width: orb.size, height: orb.size,
-          left: orb.x, top: orb.y,
-          transform: 'translate(-50%, -50%)',
-          background: `radial-gradient(circle, ${orb.color}, transparent 70%)`,
-          animation: `orbFloat ${orb.duration} ${orb.delay} ease-in-out infinite alternate`,
-          borderRadius: '50%',
-        }} />
-      ))}
-    </div>
-  );
-}
-
-// Mouse-tracking gradient
-function MouseGlow() {
-  const ref = useRef<HTMLDivElement>(null);
+// Subtle mouse-tracking gradient
+function AmbientGlow() {
   const [pos, setPos] = useState({ x: 50, y: 50 });
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -78,36 +13,79 @@ function MouseGlow() {
     return () => window.removeEventListener('mousemove', handler);
   }, []);
   return (
-    <div ref={ref} style={{
+    <div style={{
       position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0,
-      background: `radial-gradient(800px circle at ${pos.x}% ${pos.y}%, rgba(255,45,59,0.06), transparent 60%)`,
-      transition: 'background 0.3s ease',
+      background: `radial-gradient(600px circle at ${pos.x}% ${pos.y}%, rgba(255,55,95,0.04), transparent 60%)`,
+      transition: 'background 0.4s ease',
     }} />
   );
 }
 
+// Animated waveform bars
+function Waveform({ color = 'var(--accent)', bars = 12, active = true }: { color?: string; bars?: number; active?: boolean }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 2, height: 24 }}>
+      {Array.from({ length: bars }).map((_, i) => (
+        <div key={i} style={{
+          width: 2, borderRadius: 1, background: color, opacity: 0.8,
+          animation: active ? `wave ${0.4 + (i % 5) * 0.15}s ease-in-out infinite alternate` : 'none',
+          height: active ? undefined : 4,
+          animationDelay: `${i * 0.05}s`,
+        }} />
+      ))}
+    </div>
+  );
+}
+
+// Scrolling ticker
+function Ticker() {
+  const items = ['Studio-quality recording', 'WebRTC peer-to-peer', 'Local-first capture', 'Cloud backup', 'Separate audio tracks', 'Real-time signaling', 'Zero quality loss'];
+  return (
+    <div style={{ background: 'var(--surface)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)', overflow: 'hidden', padding: '14px 0' }}>
+      <div style={{ display: 'flex', animation: 'ticker 40s linear infinite', whiteSpace: 'nowrap', width: 'max-content' }}>
+        {[...items, ...items].map((item, i) => (
+          <span key={i} style={{ fontSize: '0.8rem', fontWeight: 500, color: 'var(--secondary)', padding: '0 2.5rem', letterSpacing: '0.02em' }}>
+            {item} <span style={{ opacity: 0.3, margin: '0 0.5rem' }}>·</span>
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 const features = [
-  { icon: '🎙', title: 'LOCAL-FIRST', sub: 'Recording', desc: 'Audio & video captured directly on-device. Internet drops? Your recording stays perfect.' },
-  { icon: '⚡', title: 'WEBRTC', sub: 'Engine', desc: 'Sub-50ms peer-to-peer connections. No middleman, no latency, no quality loss.' },
-  { icon: '☁', title: 'CLOUD', sub: 'Backup', desc: 'Recordings upload chunk-by-chunk as you record. Never lose a take again.' },
-  { icon: '🔀', title: 'SEPARATE', sub: 'Tracks', desc: 'Each participant recorded independently for maximum post-production control.' },
-  { icon: '🎬', title: '4K', sub: 'Quality', desc: 'Full resolution video capture. Your content deserves the highest quality.' },
-  { icon: '🔒', title: 'SECURE', sub: 'Sessions', desc: 'Unique session codes. Only invited guests can join your recording room.' },
+  { icon: '🎙', title: 'Local-first Recording', desc: 'Audio & video captured directly on your device. Internet drops? Your recording stays perfect.' },
+  { icon: '⚡', title: 'WebRTC Engine', desc: 'Sub-50ms peer-to-peer connections. No middleman servers, no latency, no quality loss.' },
+  { icon: '☁️', title: 'Cloud Backup', desc: 'Chunks upload in real-time as you record. Your work is always safely backed up.' },
+  { icon: '🔀', title: 'Separate Tracks', desc: 'Each participant recorded independently for maximum post-production flexibility.' },
+  { icon: '🎬', title: 'HD Quality', desc: 'Full resolution video capture. Your content deserves studio-grade quality.' },
+  { icon: '🔒', title: 'Secure Sessions', desc: 'Unique session codes ensure only invited guests can join your recording room.' },
 ];
 
 const steps = [
-  { num: '01', title: 'CREATE SESSION', desc: 'Start a new recording session and get a unique code to share with your guests.' },
-  { num: '02', title: 'INVITE GUESTS', desc: 'Share the session code. Guests join from any browser — no downloads needed.' },
-  { num: '03', title: 'GO LIVE', desc: 'Click Start Call. WebRTC establishes a direct peer-to-peer connection instantly.' },
-  { num: '04', title: 'RECORD & EXPORT', desc: 'Hit record. Each track is captured locally and backed up to the cloud automatically.' },
+  { num: '01', title: 'Create a session', desc: 'Start a new recording room and get a unique invite code to share.' },
+  { num: '02', title: 'Invite your guest', desc: 'Share the code. They join from any browser — no downloads needed.' },
+  { num: '03', title: 'Start the call', desc: 'WebRTC establishes a direct peer-to-peer connection in milliseconds.' },
+  { num: '04', title: 'Record & export', desc: 'Each track is captured locally and backed up to the cloud automatically.' },
+];
+
+const techStack = [
+  { name: 'WebRTC', role: 'P2P Streaming', accent: 'var(--accent)' },
+  { name: 'React', role: 'Frontend', accent: 'var(--blue)' },
+  { name: 'Node.js', role: 'Backend API', accent: 'var(--green)' },
+  { name: 'WebSocket', role: 'Signaling', accent: 'var(--amber)' },
+  { name: 'PostgreSQL', role: 'Database', accent: 'var(--accent)' },
+  { name: 'Supabase', role: 'Storage', accent: 'var(--green)' },
+  { name: 'Prisma', role: 'ORM', accent: 'var(--blue)' },
+  { name: 'BullMQ', role: 'Job Queue', accent: 'var(--amber)' },
 ];
 
 const faqs = [
-  { q: 'Do guests need to create an account?', a: 'No! Guests only need the session code. Only the host needs an account to create sessions.' },
-  { q: 'What happens if the internet drops during recording?', a: 'Since recording is local-first, your audio and video keep recording on-device. Only the live stream drops temporarily.' },
-  { q: 'What browsers are supported?', a: 'Any modern browser that supports WebRTC: Chrome, Firefox, Safari, Edge. Mobile browsers work too.' },
+  { q: 'Do guests need to create an account?', a: 'Guests need a free account to join sessions. It takes 10 seconds to sign up — no credit card required.' },
+  { q: 'What happens if the internet drops?', a: 'Since recording is local-first, your audio and video keep recording on-device even if the live connection drops temporarily.' },
+  { q: 'What browsers are supported?', a: 'Any modern browser with WebRTC support: Chrome, Firefox, Safari, and Edge. Mobile browsers work too.' },
   { q: 'Is my data private?', a: 'Sessions are protected by unique codes. Recordings are stored securely in your personal cloud storage.' },
-  { q: 'How many participants can join?', a: 'Currently supports up to 8 participants per session. Each gets their own separate track.' },
+  { q: 'How many participants per session?', a: 'Currently supports 1 host + 1 guest per session. Multi-guest support is coming soon.' },
 ];
 
 export default function Landing() {
@@ -115,182 +93,214 @@ export default function Landing() {
   const heroRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--black)', overflowX: 'hidden' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)' }}>
       <Navbar />
 
       {/* ── HERO ── */}
       <section ref={heroRef} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}>
-        <FloatingOrbs />
-        <MouseGlow />
+        <AmbientGlow />
 
-        {/* Grid overlay */}
-        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(255,255,255,0.015) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.015) 1px,transparent 1px)', backgroundSize: '60px 60px', pointerEvents: 'none', zIndex: 0 }} />
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '140px 2rem 80px', position: 'relative', zIndex: 1 }}>
 
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '120px 2rem 80px', position: 'relative', zIndex: 1 }}>
-
-          {/* Top badge */}
-          <div className="anim-fadeUp" style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: '2rem', padding: '6px 16px', borderRadius: 100, border: '1px solid var(--border2)', background: 'rgba(255,45,59,0.05)' }}>
-            <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--red)', animation: 'blink 1s ease-in-out infinite' }} />
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', letterSpacing: '0.12em', color: 'var(--muted)' }}>STUDIO-QUALITY REMOTE RECORDING</span>
+          {/* Badge */}
+          <div className="anim-fadeUp" style={{
+            display: 'inline-flex', alignItems: 'center', gap: 8, marginBottom: '1.5rem',
+            padding: '6px 16px', borderRadius: 20,
+            background: 'var(--accent-soft)', border: '1px solid rgba(255,55,95,0.2)',
+          }}>
+            <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--accent)', animation: 'pulse 2s ease-in-out infinite' }} />
+            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--accent)', letterSpacing: '0.03em' }}>Now in public beta</span>
           </div>
 
-          {/* Studio clock */}
-          <div className="anim-fadeUp" style={{ marginBottom: '1.5rem' }}><StudioClock /></div>
-
-          {/* Main headline */}
-          <h1 className="anim-fadeUp-1" style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(4rem, 12vw, 10rem)', letterSpacing: '0.02em', lineHeight: 0.88, textAlign: 'center', marginBottom: '1.5rem', position: 'relative' }}>
-            <span style={{ display: 'block', color: 'var(--text)' }}>RECORD</span>
-            <span style={{ display: 'block', color: 'var(--red)', textShadow: '0 0 60px rgba(255,45,59,0.4)', position: 'relative' }}>
-              STUDIO
-              <span style={{ position: 'absolute', inset: 0, color: 'rgba(255,45,59,0.15)', transform: 'translate(3px, 3px)', zIndex: -1, animation: 'glitch 4s ease-in-out infinite 2s' }}>STUDIO</span>
-            </span>
-            <span style={{ display: 'block', color: 'var(--text)' }}>QUALITY</span>
+          {/* Headline */}
+          <h1 className="anim-fadeUp-1" style={{
+            fontFamily: 'var(--font)', fontSize: 'clamp(3rem, 8vw, 5.5rem)',
+            fontWeight: 700, letterSpacing: '-0.03em', lineHeight: 1.05,
+            textAlign: 'center', marginBottom: '1.25rem',
+            background: 'linear-gradient(to bottom, var(--text) 0%, var(--secondary) 100%)',
+            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+          }}>
+            Record studio-quality<br />podcasts, remotely.
           </h1>
 
-          <p className="anim-fadeUp-2" style={{ fontSize: 'clamp(1rem, 2vw, 1.25rem)', color: 'var(--muted)', maxWidth: 560, textAlign: 'center', lineHeight: 1.6, marginBottom: '3rem', fontWeight: 300 }}>
-            Riverside-quality podcast recording. WebRTC peer-to-peer streams. Local-first capture. No compromises.
+          <p className="anim-fadeUp-2" style={{
+            fontSize: 'clamp(1rem, 2vw, 1.2rem)', color: 'var(--secondary)',
+            maxWidth: 520, textAlign: 'center', lineHeight: 1.7, marginBottom: '2.5rem',
+          }}>
+            WebRTC peer-to-peer streaming with local-first recording.
+            Each track captured independently for perfect quality — every time.
           </p>
 
-          {/* CTA buttons */}
-          <div className="anim-fadeUp-3" style={{ display: 'flex', gap: 14, flexWrap: 'wrap', justifyContent: 'center', marginBottom: '4rem' }}>
-            <Link to="/signup" style={{ padding: '14px 36px', background: 'var(--red)', color: 'white', borderRadius: 8, textDecoration: 'none', fontFamily: 'var(--font-display)', fontSize: '1rem', letterSpacing: '0.1em', boxShadow: '0 0 40px rgba(255,45,59,0.3)', transition: 'all 0.2s', display: 'flex', alignItems: 'center', gap: 10 }}>
-              <div style={{ width: 8, height: 8, borderRadius: '50%', background: 'white', animation: 'blink 1s ease-in-out infinite' }} />
-              START RECORDING FREE
+          {/* CTA */}
+          <div className="anim-fadeUp-3" style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center', marginBottom: '5rem' }}>
+            <Link to="/signup" style={{
+              padding: '14px 32px', background: 'var(--accent)', color: 'white',
+              borderRadius: 12, textDecoration: 'none', fontWeight: 600,
+              fontSize: '0.95rem', transition: 'all 0.3s var(--ease)',
+              boxShadow: '0 4px 24px rgba(255,55,95,0.3)',
+            }}>
+              Start recording — it's free
             </Link>
-            <Link to="/login" style={{ padding: '14px 36px', background: 'transparent', color: 'var(--text)', borderRadius: 8, textDecoration: 'none', fontFamily: 'var(--font-display)', fontSize: '1rem', letterSpacing: '0.1em', border: '1px solid var(--border2)', transition: 'all 0.2s' }}>
-              SIGN IN →
+            <Link to="/login" style={{
+              padding: '14px 32px', background: 'transparent', color: 'var(--text)',
+              borderRadius: 12, textDecoration: 'none', fontWeight: 600,
+              fontSize: '0.95rem', border: '1px solid var(--border)',
+              transition: 'all 0.3s var(--ease)',
+            }}>
+              Sign in →
             </Link>
           </div>
 
-          {/* Hero studio mockup */}
-          <div className="anim-fadeUp-4" style={{ width: '100%', maxWidth: 860, background: 'var(--surface)', border: '1px solid var(--border2)', borderRadius: 16, overflow: 'hidden', boxShadow: '0 40px 120px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04)', position: 'relative' }}>
-            {/* Red recording border */}
-            <div style={{ position: 'absolute', inset: 0, border: '2px solid rgba(255,45,59,0.3)', borderRadius: 16, pointerEvents: 'none', animation: 'borderGlow 3s ease-in-out infinite' }} />
-
-            {/* Mockup topbar */}
-            <div style={{ background: 'var(--surface2)', borderBottom: '1px solid var(--border)', padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          {/* Studio mockup */}
+          <div className="anim-fadeUp-4" style={{
+            width: '100%', maxWidth: 820,
+            background: 'var(--surface)', border: '1px solid var(--border)',
+            borderRadius: 16, overflow: 'hidden',
+            boxShadow: '0 32px 80px rgba(0,0,0,0.5)',
+          }}>
+            {/* Window bar */}
+            <div style={{
+              background: 'var(--surface2)', borderBottom: '1px solid var(--border)',
+              padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <div style={{ display: 'flex', gap: 6 }}>
-                  {['#ff5f57','#febc2e','#28c840'].map(c => <div key={c} style={{ width: 10, height: 10, borderRadius: '50%', background: c }} />)}
+                  {['#ff5f57', '#febc2e', '#28c840'].map(c => <div key={c} style={{ width: 10, height: 10, borderRadius: '50%', background: c }} />)}
                 </div>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6rem', color: 'var(--dim)', letterSpacing: '0.06em' }}>podcastly.app/nsender</div>
+                <span style={{ fontFamily: 'var(--mono)', fontSize: '0.7rem', color: 'var(--tertiary)', marginLeft: 8 }}>podcastly.app — Recording Studio</span>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '3px 10px', borderRadius: 100, background: 'rgba(255,45,59,0.12)', border: '1px solid rgba(255,45,59,0.4)' }}>
-                <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--red)', animation: 'blink 1s ease-in-out infinite' }} />
-                <span style={{ fontFamily: 'var(--font-display)', fontSize: '0.75rem', letterSpacing: '0.1em', color: 'var(--red)' }}>ON AIR · 00:14:32</span>
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: 6,
+                padding: '3px 10px', borderRadius: 12,
+                background: 'rgba(255,55,95,0.1)', border: '1px solid rgba(255,55,95,0.2)',
+              }}>
+                <div style={{ width: 5, height: 5, borderRadius: '50%', background: 'var(--accent)', animation: 'pulse 2s ease-in-out infinite' }} />
+                <span style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--accent)' }}>Recording · 00:14:32</span>
               </div>
             </div>
 
-            {/* Mockup content */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 240px', height: 220 }}>
+            {/* Content */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 220px', height: 200 }}>
               {/* Video area */}
-              <div style={{ background: '#080808', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <div style={{ position: 'absolute', inset: 0, backgroundImage: 'repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.05) 3px,rgba(0,0,0,0.05) 4px)' }} />
-                {/* Fake participant cards */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, padding: 12, width: '100%' }}>
-                  {[
-                    { init: 'VK', name: 'Vaibhav K.', active: true },
-                    { init: 'SJ', name: 'Sara J.', active: false },
-                  ].map(p => (
-                    <div key={p.init} style={{ background: p.active ? 'rgba(255,45,59,0.08)' : 'var(--surface)', border: `1px solid ${p.active ? 'rgba(255,45,59,0.5)' : 'var(--border)'}`, borderRadius: 8, padding: '12px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, boxShadow: p.active ? '0 0 20px rgba(255,45,59,0.15)' : 'none' }}>
-                      <div style={{ width: 40, height: 40, borderRadius: '50%', background: p.active ? 'var(--red)' : 'var(--surface3)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-display)', fontSize: '0.9rem', color: 'white' }}>{p.init}</div>
-                      <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.58rem', color: p.active ? 'var(--text)' : 'var(--dim)', letterSpacing: '0.04em' }}>{p.name}</div>
-                      <Waveform bars={8} active={p.active} color={p.active ? 'var(--red)' : 'rgba(255,255,255,0.2)'} />
-                    </div>
-                  ))}
-                </div>
+              <div style={{ background: '#0a0a0a', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6, padding: 10 }}>
+                {[
+                  { init: 'VK', name: 'Vaibhav K.', active: true },
+                  { init: 'SJ', name: 'Sara J.', active: false },
+                ].map(p => (
+                  <div key={p.init} style={{
+                    background: p.active ? 'rgba(255,55,95,0.06)' : 'var(--surface)',
+                    border: `1px solid ${p.active ? 'rgba(255,55,95,0.3)' : 'var(--border)'}`,
+                    borderRadius: 10, display: 'flex', flexDirection: 'column',
+                    alignItems: 'center', justifyContent: 'center', gap: 6,
+                  }}>
+                    <div style={{
+                      width: 36, height: 36, borderRadius: '50%',
+                      background: p.active ? 'var(--accent)' : 'var(--surface3)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontSize: '0.8rem', fontWeight: 700, color: 'white',
+                    }}>{p.init}</div>
+                    <span style={{ fontSize: '0.7rem', color: p.active ? 'var(--text)' : 'var(--tertiary)', fontWeight: 500 }}>{p.name}</span>
+                    <Waveform bars={8} active={p.active} color={p.active ? 'var(--accent)' : 'rgba(255,255,255,0.15)'} />
+                  </div>
+                ))}
               </div>
-              {/* Right panel */}
+              {/* Panel */}
               <div style={{ background: 'var(--surface2)', borderLeft: '1px solid var(--border)', padding: '12px', display: 'flex', flexDirection: 'column', gap: 8 }}>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.55rem', color: 'var(--dim)', letterSpacing: '0.1em' }}>// SESSION CODE</div>
-                <div style={{ padding: '6px 8px', background: 'var(--surface3)', border: '1px solid var(--border2)', borderRadius: 5, fontFamily: 'var(--font-display)', fontSize: '0.7rem', letterSpacing: '0.08em', color: 'var(--text)' }}>a3f9-bc12-7e04</div>
-                <div style={{ height: 1, background: 'var(--border)', margin: '4px 0' }} />
-                {[['PROTOCOL','WebRTC P2P'],['STATUS','● RECORDING'],['QUALITY','1080P'],['STORAGE','Supabase']].map(([k,v]) => (
-                  <div key={k} style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.52rem', color: 'var(--dim)' }}>{k}</span>
-                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.55rem', color: v.startsWith('●') ? 'var(--red)' : 'var(--text)' }}>{v}</span>
+                <div style={{ fontSize: '0.65rem', color: 'var(--tertiary)', fontWeight: 600 }}>Session Info</div>
+                <div style={{
+                  padding: '6px 8px', background: 'var(--surface3)', borderRadius: 6,
+                  fontFamily: 'var(--mono)', fontSize: '0.7rem', color: 'var(--text)',
+                }}>a3f9-bc12-7e04</div>
+                {[['Protocol', 'WebRTC P2P'], ['Status', '● Recording'], ['Quality', '1080p']].map(([k, v]) => (
+                  <div key={k} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.65rem' }}>
+                    <span style={{ color: 'var(--tertiary)' }}>{k}</span>
+                    <span style={{ color: v.startsWith('●') ? 'var(--accent)' : 'var(--text)', fontWeight: 500 }}>{v}</span>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Control bar */}
-            <div style={{ background: 'var(--surface)', borderTop: '1px solid var(--border)', padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Waveform bars={16} active={true} />
-              <div style={{ display: 'flex', gap: 8 }}>
-                {['🎙','📹'].map((icon,i) => (
-                  <div key={i} style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--surface3)', border: '1px solid var(--border2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.85rem' }}>{icon}</div>
+            <div style={{
+              background: 'var(--surface)', borderTop: '1px solid var(--border)',
+              padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            }}>
+              <Waveform bars={14} active />
+              <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+                {['🎙', '📹'].map((icon, i) => (
+                  <div key={i} style={{
+                    width: 30, height: 30, borderRadius: '50%',
+                    background: 'var(--surface2)', border: '1px solid var(--border)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem',
+                  }}>{icon}</div>
                 ))}
-                <div style={{ padding: '6px 16px', background: 'var(--surface3)', color: 'var(--red)', border: '1px solid rgba(255,45,59,0.4)', borderRadius: 6, fontFamily: 'var(--font-display)', fontSize: '0.72rem', letterSpacing: '0.08em', display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <div style={{ width: 8, height: 8, borderRadius: 2, background: 'var(--red)' }} /> STOP REC
+                <div style={{
+                  padding: '6px 14px', background: 'var(--accent-soft)',
+                  color: 'var(--accent)', border: '1px solid rgba(255,55,95,0.3)',
+                  borderRadius: 8, fontSize: '0.7rem', fontWeight: 600,
+                  display: 'flex', alignItems: 'center', gap: 5,
+                }}>
+                  <div style={{ width: 6, height: 6, borderRadius: 2, background: 'var(--accent)' }} /> Stop
                 </div>
               </div>
-              <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.2rem', color: 'var(--red)', letterSpacing: '0.06em' }}>00:14:32</div>
+              <span style={{ fontFamily: 'var(--mono)', fontSize: '0.85rem', color: 'var(--accent)', fontWeight: 600 }}>00:14:32</span>
             </div>
-          </div>
-
-          {/* Stats row */}
-          <div className="anim-fadeUp-5" style={{ display: 'flex', gap: '3rem', marginTop: '3rem', flexWrap: 'wrap', justifyContent: 'center' }}>
-            {[['WebRTC','P2P Engine'],['Local-First','Recording'],['4K','Quality'],['Free','To Start']].map(([n,l]) => (
-              <div key={l} style={{ textAlign: 'center' }}>
-                <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', letterSpacing: '0.04em', color: 'var(--text)' }}>{n}</div>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.58rem', letterSpacing: '0.1em', color: 'var(--dim)', marginTop: 4 }}>{l.toUpperCase()}</div>
-              </div>
-            ))}
           </div>
         </div>
 
-        {/* Scroll indicator */}
-        <div style={{ display: 'flex', justifyContent: 'center', paddingBottom: '2rem', position: 'relative', zIndex: 1 }}>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, animation: 'fadeIn 1s 1s both' }}>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.55rem', letterSpacing: '0.12em', color: 'var(--dim)' }}>SCROLL</div>
-            <div style={{ width: 1, height: 40, background: 'linear-gradient(to bottom, var(--dim), transparent)', animation: 'fadeIn 1s 1.5s both' }} />
+        {/* Scroll hint */}
+        <div style={{ display: 'flex', justifyContent: 'center', paddingBottom: '2rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, animation: 'fadeIn 1s 1.5s both' }}>
+            <span style={{ fontSize: '0.7rem', color: 'var(--tertiary)', fontWeight: 500 }}>Scroll to explore</span>
+            <div style={{ width: 1, height: 32, background: 'linear-gradient(to bottom, var(--tertiary), transparent)' }} />
           </div>
         </div>
       </section>
 
-      {/* TICKER */}
       <Ticker />
 
       {/* ── FEATURES ── */}
-      <section style={{ padding: '100px 2rem', maxWidth: 1200, margin: '0 auto' }}>
+      <section style={{ padding: '120px 2rem', maxWidth: 1100, margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: '5rem' }}>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', letterSpacing: '0.14em', color: 'var(--red)', marginBottom: '1rem' }}>// WHAT MAKES US DIFFERENT</div>
-          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2.5rem, 6vw, 5rem)', letterSpacing: '0.04em', lineHeight: 0.92 }}>BUILT FOR<br />CREATORS</h2>
+          <p className="anim-fadeUp" style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--accent)', marginBottom: '0.75rem', letterSpacing: '0.05em' }}>Features</p>
+          <h2 className="anim-fadeUp-1" style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 700, letterSpacing: '-0.03em', lineHeight: 1.1 }}>
+            Built for creators<br />who care about quality.
+          </h2>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1px', border: '1px solid var(--border)', borderRadius: 16, overflow: 'hidden' }}>
           {features.map((f, i) => (
-            <div key={i} className="anim-fadeUp" style={{ background: 'var(--surface)', padding: '2.5rem', position: 'relative', transition: 'background 0.2s', cursor: 'default' }}
-              onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface2)')}
-              onMouseLeave={e => (e.currentTarget.style.background = 'var(--surface)')}>
-              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: i % 3 === 0 ? 'var(--red)' : i % 3 === 1 ? 'var(--amber)' : 'var(--cyan)', opacity: 0, transition: 'opacity 0.2s' }} className="feature-top-line" />
-              <div style={{ fontSize: '2rem', marginBottom: '1.25rem' }}>{f.icon}</div>
-              <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.1rem', letterSpacing: '0.08em', marginBottom: '0.2rem' }}>{f.title}</div>
-              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6rem', letterSpacing: '0.12em', color: 'var(--red)', marginBottom: '0.75rem' }}>{f.sub.toUpperCase()}</div>
-              <div style={{ fontSize: '0.875rem', color: 'var(--muted)', lineHeight: 1.6, fontWeight: 300 }}>{f.desc}</div>
+            <div key={i} style={{
+              background: 'var(--surface)', padding: '2.25rem', transition: 'background 0.3s',
+              cursor: 'default',
+            }}
+              onMouseEnter={e => e.currentTarget.style.background = 'var(--surface2)'}
+              onMouseLeave={e => e.currentTarget.style.background = 'var(--surface)'}
+            >
+              <div style={{ fontSize: '1.75rem', marginBottom: '1rem' }}>{f.icon}</div>
+              <div style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '0.5rem', letterSpacing: '-0.01em' }}>{f.title}</div>
+              <div style={{ fontSize: '0.875rem', color: 'var(--secondary)', lineHeight: 1.6 }}>{f.desc}</div>
             </div>
           ))}
         </div>
       </section>
 
       {/* ── HOW IT WORKS ── */}
-      <section style={{ padding: '80px 2rem', background: 'var(--surface)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)' }}>
+      <section style={{ padding: '100px 2rem', background: 'var(--surface)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)' }}>
         <div style={{ maxWidth: 1000, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '5rem' }}>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', letterSpacing: '0.14em', color: 'var(--amber)', marginBottom: '1rem' }}>// WORKFLOW</div>
-            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2.5rem, 6vw, 5rem)', letterSpacing: '0.04em', lineHeight: 0.92 }}>HOW IT<br />WORKS</h2>
+            <p style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--amber)', marginBottom: '0.75rem', letterSpacing: '0.05em' }}>How it works</p>
+            <h2 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 700, letterSpacing: '-0.03em', lineHeight: 1.1 }}>
+              Four steps to<br />studio-quality audio.
+            </h2>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '2rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '2.5rem' }}>
             {steps.map((step, i) => (
-              <div key={i} className="anim-fadeUp" style={{ position: 'relative' }}>
-                {i < steps.length - 1 && (
-                  <div style={{ position: 'absolute', top: '1.5rem', right: '-1rem', width: '2rem', height: 1, background: 'var(--border)', display: 'none' }} />
-                )}
-                <div style={{ fontFamily: 'var(--font-display)', fontSize: '3.5rem', letterSpacing: '0.04em', color: 'rgba(255,45,59,0.15)', lineHeight: 1, marginBottom: '1rem' }}>{step.num}</div>
-                <div style={{ fontFamily: 'var(--font-display)', fontSize: '1rem', letterSpacing: '0.1em', marginBottom: '0.75rem', color: 'var(--text)' }}>{step.title}</div>
-                <div style={{ fontSize: '0.875rem', color: 'var(--muted)', lineHeight: 1.6, fontWeight: 300 }}>{step.desc}</div>
+              <div key={i}>
+                <div style={{ fontSize: '3rem', fontWeight: 800, color: 'rgba(255,55,95,0.1)', lineHeight: 1, marginBottom: '1rem', letterSpacing: '-0.02em' }}>{step.num}</div>
+                <div style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '0.5rem' }}>{step.title}</div>
+                <div style={{ fontSize: '0.875rem', color: 'var(--secondary)', lineHeight: 1.6 }}>{step.desc}</div>
               </div>
             ))}
           </div>
@@ -298,53 +308,64 @@ export default function Landing() {
       </section>
 
       {/* ── TECH STACK ── */}
-      <section style={{ padding: '100px 2rem', maxWidth: 1200, margin: '0 auto' }}>
+      <section style={{ padding: '120px 2rem', maxWidth: 1100, margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', letterSpacing: '0.14em', color: 'var(--cyan)', marginBottom: '1rem' }}>// UNDER THE HOOD</div>
-          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2.5rem, 6vw, 5rem)', letterSpacing: '0.04em', lineHeight: 0.92 }}>TECH<br />STACK</h2>
+          <p style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--blue)', marginBottom: '0.75rem', letterSpacing: '0.05em' }}>Under the hood</p>
+          <h2 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 700, letterSpacing: '-0.03em', lineHeight: 1.1 }}>
+            Modern tech stack.
+          </h2>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1px', border: '1px solid var(--border)', borderRadius: 12, overflow: 'hidden' }}>
-          {[
-            { name: 'WebRTC', role: 'P2P Streaming', color: 'var(--red)' },
-            { name: 'React', role: 'Frontend UI', color: 'var(--cyan)' },
-            { name: 'Node.js', role: 'Backend API', color: 'var(--green)' },
-            { name: 'WebSocket', role: 'Signaling Server', color: 'var(--amber)' },
-            { name: 'PostgreSQL', role: 'Database', color: 'var(--red)' },
-            { name: 'Supabase', role: 'Cloud Storage', color: 'var(--cyan)' },
-            { name: 'BullMQ', role: 'Job Queue', color: 'var(--amber)' },
-            { name: 'Prisma', role: 'ORM', color: 'var(--green)' },
-          ].map((tech, i) => (
-            <div key={i} style={{ background: 'var(--surface)', padding: '1.75rem', display: 'flex', flexDirection: 'column', gap: 6, transition: 'background 0.2s' }}
-              onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface2)')}
-              onMouseLeave={e => (e.currentTarget.style.background = 'var(--surface)')}>
-              <div style={{ width: 8, height: 8, borderRadius: '50%', background: tech.color, marginBottom: 4 }} />
-              <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.1rem', letterSpacing: '0.06em' }}>{tech.name}</div>
-              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.58rem', letterSpacing: '0.1em', color: 'var(--dim)' }}>{tech.role.toUpperCase()}</div>
+          {techStack.map((tech, i) => (
+            <div key={i} style={{
+              background: 'var(--surface)', padding: '1.5rem', transition: 'background 0.3s',
+            }}
+              onMouseEnter={e => e.currentTarget.style.background = 'var(--surface2)'}
+              onMouseLeave={e => e.currentTarget.style.background = 'var(--surface)'}
+            >
+              <div style={{ width: 6, height: 6, borderRadius: '50%', background: tech.accent, marginBottom: '0.75rem' }} />
+              <div style={{ fontSize: '1rem', fontWeight: 700, letterSpacing: '-0.01em' }}>{tech.name}</div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--tertiary)', fontWeight: 500, marginTop: 4 }}>{tech.role}</div>
             </div>
           ))}
         </div>
       </section>
 
       {/* ── FAQ ── */}
-      <section style={{ padding: '80px 2rem', background: 'var(--surface)', borderTop: '1px solid var(--border)' }}>
-        <div style={{ maxWidth: 760, margin: '0 auto' }}>
+      <section style={{ padding: '100px 2rem', background: 'var(--surface)', borderTop: '1px solid var(--border)' }}>
+        <div style={{ maxWidth: 700, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', letterSpacing: '0.14em', color: 'var(--red)', marginBottom: '1rem' }}>// COMMON QUESTIONS</div>
-            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2.5rem, 6vw, 5rem)', letterSpacing: '0.04em', lineHeight: 0.92 }}>FAQ</h2>
+            <p style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--accent)', marginBottom: '0.75rem', letterSpacing: '0.05em' }}>FAQ</p>
+            <h2 style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', fontWeight: 700, letterSpacing: '-0.03em', lineHeight: 1.1 }}>Common questions.</h2>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1px', border: '1px solid var(--border)', borderRadius: 12, overflow: 'hidden' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 1, borderRadius: 12, overflow: 'hidden', border: '1px solid var(--border)' }}>
             {faqs.map((faq, i) => (
-              <div key={i} style={{ background: activeFaq === i ? 'var(--surface2)' : 'var(--surface3)', cursor: 'pointer', transition: 'background 0.2s' }}
-                onClick={() => setActiveFaq(activeFaq === i ? null : i)}>
-                <div style={{ padding: '1.25rem 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
-                  <div style={{ fontFamily: 'var(--font-display)', fontSize: '0.9rem', letterSpacing: '0.04em', color: activeFaq === i ? 'var(--red)' : 'var(--text)' }}>{faq.q}</div>
-                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1rem', color: activeFaq === i ? 'var(--red)' : 'var(--dim)', flexShrink: 0, transition: 'transform 0.2s', transform: activeFaq === i ? 'rotate(45deg)' : 'none' }}>+</div>
+              <div key={i}
+                style={{
+                  background: activeFaq === i ? 'var(--surface2)' : 'var(--surface)',
+                  cursor: 'pointer', transition: 'background 0.2s',
+                }}
+                onClick={() => setActiveFaq(activeFaq === i ? null : i)}
+              >
+                <div style={{
+                  padding: '1.1rem 1.25rem', display: 'flex', alignItems: 'center',
+                  justifyContent: 'space-between', gap: '1rem',
+                }}>
+                  <span style={{ fontSize: '0.9rem', fontWeight: 600, color: activeFaq === i ? 'var(--text)' : 'var(--secondary)' }}>{faq.q}</span>
+                  <span style={{
+                    fontSize: '1rem', color: activeFaq === i ? 'var(--accent)' : 'var(--tertiary)',
+                    transition: 'transform 0.2s', transform: activeFaq === i ? 'rotate(45deg)' : 'none',
+                    flexShrink: 0,
+                  }}>+</span>
                 </div>
-                {activeFaq === i && (
-                  <div style={{ padding: '0 1.5rem 1.25rem', fontSize: '0.875rem', color: 'var(--muted)', lineHeight: 1.7, fontWeight: 300 }}>{faq.a}</div>
-                )}
+                <div style={{
+                  maxHeight: activeFaq === i ? 200 : 0, overflow: 'hidden',
+                  transition: 'max-height 0.3s ease',
+                }}>
+                  <div style={{ padding: '0 1.25rem 1.1rem', fontSize: '0.875rem', color: 'var(--secondary)', lineHeight: 1.7 }}>{faq.a}</div>
+                </div>
               </div>
             ))}
           </div>
@@ -352,46 +373,41 @@ export default function Landing() {
       </section>
 
       {/* ── CTA ── */}
-      <section style={{ padding: '120px 2rem', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 80% 60% at 50% 50%, rgba(255,45,59,0.08), transparent)', pointerEvents: 'none' }} />
-        <div style={{ maxWidth: 800, margin: '0 auto', textAlign: 'center', position: 'relative', zIndex: 1 }}>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', letterSpacing: '0.14em', color: 'var(--red)', marginBottom: '1.5rem' }}>// READY TO RECORD?</div>
-          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(3rem, 8vw, 7rem)', letterSpacing: '0.04em', lineHeight: 0.88, marginBottom: '2rem' }}>
-            START YOUR<br />
-            <span style={{ color: 'var(--red)', textShadow: '0 0 60px rgba(255,45,59,0.4)' }}>BROADCAST</span>
+      <section style={{ padding: '140px 2rem', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(255,55,95,0.06), transparent)', pointerEvents: 'none' }} />
+        <div style={{ maxWidth: 700, margin: '0 auto', textAlign: 'center', position: 'relative', zIndex: 1 }}>
+          <h2 style={{
+            fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', fontWeight: 700, letterSpacing: '-0.03em',
+            lineHeight: 1.1, marginBottom: '1.5rem',
+          }}>
+            Ready to record?
           </h2>
-          <p style={{ fontSize: '1.1rem', color: 'var(--muted)', marginBottom: '3rem', fontWeight: 300 }}>
-            Free to start. No credit card required. Studio-quality audio and video from day one.
+          <p style={{ fontSize: '1.1rem', color: 'var(--secondary)', marginBottom: '2.5rem', lineHeight: 1.6 }}>
+            Free to start. No credit card required.<br />Studio-quality from day one.
           </p>
-          <Link to="/signup" style={{ padding: '16px 48px', background: 'var(--red)', color: 'white', borderRadius: 8, textDecoration: 'none', fontFamily: 'var(--font-display)', fontSize: '1.1rem', letterSpacing: '0.12em', boxShadow: '0 0 60px rgba(255,45,59,0.4)', display: 'inline-flex', alignItems: 'center', gap: 12 }}>
-            <div style={{ width: 9, height: 9, borderRadius: '50%', background: 'white', animation: 'blink 1s ease-in-out infinite' }} />
-            CREATE FREE ACCOUNT
+          <Link to="/signup" style={{
+            padding: '16px 40px', background: 'var(--accent)', color: 'white',
+            borderRadius: 14, textDecoration: 'none', fontWeight: 700,
+            fontSize: '1.05rem', display: 'inline-block',
+            boxShadow: '0 4px 32px rgba(255,55,95,0.35)',
+            transition: 'transform 0.2s var(--ease), box-shadow 0.2s',
+          }}>
+            Create free account →
           </Link>
         </div>
       </section>
 
       {/* ── FOOTER ── */}
       <footer style={{ borderTop: '1px solid var(--border)', padding: '2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
-          <div style={{ width: 22, height: 22, borderRadius: 5, background: 'var(--red)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <div style={{ width: 7, height: 7, borderRadius: '50%', background: 'white' }} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div style={{ width: 20, height: 20, borderRadius: 5, background: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'white' }} />
           </div>
-          <span style={{ fontFamily: 'var(--font-display)', fontSize: '1rem', letterSpacing: '0.06em' }}>PODCASTLY</span>
+          <span style={{ fontWeight: 700, fontSize: '0.9rem' }}>Podcastly</span>
         </div>
-        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6rem', color: 'var(--dim)', letterSpacing: '0.08em' }}>
-          BUILT WITH WEBRTC · REACT · NODE.JS
-        </div>
-        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6rem', color: 'var(--dim)', letterSpacing: '0.06em' }}>
-          © 2025 PODCASTLY
-        </div>
+        <span style={{ fontSize: '0.75rem', color: 'var(--tertiary)' }}>Built with WebRTC · React · Node.js</span>
+        <span style={{ fontSize: '0.75rem', color: 'var(--tertiary)' }}>© 2025 Podcastly</span>
       </footer>
-
-      <style>{`
-        @keyframes orbFloat {
-          from { transform: translate(-50%, -50%) scale(1); }
-          to { transform: translate(-50%, -50%) scale(1.15); }
-        }
-      `}</style>
     </div>
   );
 }

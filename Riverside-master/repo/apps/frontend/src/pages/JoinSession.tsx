@@ -11,7 +11,7 @@ export default function JoinSession() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!sessionCode.trim()) { setError('Session code required'); return; }
+    if (!sessionCode.trim()) { setError('Session code is required'); return; }
     setLoading(true);
     try {
       const res = await joinSession(sessionCode);
@@ -24,31 +24,59 @@ export default function JoinSession() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--black)' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex', flexDirection: 'column' }}>
       <Navbar loggedIn />
-      <div style={{ minHeight: '100vh', paddingTop: 68, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '100px 2rem 3rem', position: 'relative' }}>
-        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 50% 40% at 50% 50%, rgba(255,45,59,0.06), transparent)', pointerEvents: 'none' }} />
-        <div className="anim-fadeUp" style={{ background: 'var(--surface)', border: '1px solid var(--border2)', borderRadius: 16, padding: '3rem', width: '100%', maxWidth: 500, position: 'relative', zIndex: 1 }}>
-          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, background: 'linear-gradient(90deg, var(--amber), var(--red))', borderRadius: '16px 16px 0 0' }} />
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6rem', letterSpacing: '0.14em', color: 'var(--amber)', marginBottom: '1rem' }}>// JOIN BROADCAST</div>
-          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '2.8rem', letterSpacing: '0.04em', lineHeight: 0.95, marginBottom: '0.5rem' }}>JOIN A<br />SESSION</h1>
-          <p style={{ fontSize: '0.875rem', color: 'var(--muted)', marginBottom: '2.5rem', fontWeight: 300 }}>Enter the session code your host shared with you to join the recording room.</p>
+      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '100px 2rem 3rem' }}>
+        <div className="anim-fadeUp" style={{ width: '100%', maxWidth: 460 }}>
 
-          {error && <div style={{ background: 'rgba(255,45,59,0.08)', border: '1px solid rgba(255,45,59,0.3)', borderRadius: 6, padding: '12px', fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'var(--red)', letterSpacing: '0.06em', marginBottom: '1.5rem' }}>⚠ {error.toUpperCase()}</div>}
+          <h1 style={{ fontSize: '1.75rem', fontWeight: 700, letterSpacing: '-0.02em', marginBottom: '0.5rem' }}>
+            Join a session
+          </h1>
+          <p style={{ fontSize: '0.875rem', color: 'var(--secondary)', marginBottom: '2rem' }}>
+            Enter the session code your host shared with you.
+          </p>
+
+          {error && (
+            <div style={{
+              background: 'rgba(255,55,95,0.08)', border: '1px solid rgba(255,55,95,0.2)',
+              borderRadius: 10, padding: '12px 16px', fontSize: '0.8rem',
+              color: 'var(--accent)', marginBottom: '1.5rem',
+            }}>
+              {error}
+            </div>
+          )}
 
           <form onSubmit={handleSubmit}>
-            <div style={{ marginBottom: '2rem' }}>
-              <label style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6rem', letterSpacing: '0.1em', color: 'var(--dim)', display: 'block', marginBottom: 6 }}>SESSION CODE</label>
-              <input type="text" style={{ width: '100%', padding: '16px', background: 'var(--surface3)', border: '1px solid var(--border2)', borderRadius: 6, color: 'var(--text)', fontFamily: 'var(--font-display)', fontSize: '1.5rem', letterSpacing: '0.15em', textTransform: 'uppercase', outline: 'none', textAlign: 'center' }}
-                placeholder="XXXX-XXXX" value={sessionCode} onChange={e => setSessionCode(e.target.value)}
-                onFocus={e => e.currentTarget.style.borderColor = 'rgba(255,45,59,0.5)'}
-                onBlur={e => e.currentTarget.style.borderColor = 'var(--border2)'} />
+            <div style={{ marginBottom: '1.5rem' }}>
+              <label style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--secondary)', display: 'block', marginBottom: 6 }}>Session code</label>
+              <input type="text" placeholder="Paste session code here"
+                value={sessionCode} onChange={e => setSessionCode(e.target.value)}
+                style={{
+                  width: '100%', padding: '16px', background: 'var(--surface)',
+                  border: '1px solid var(--border)', borderRadius: 12, color: 'var(--text)',
+                  fontFamily: 'var(--mono)', fontSize: '1rem', letterSpacing: '0.02em',
+                  outline: 'none', textAlign: 'center',
+                  transition: 'border-color 0.2s, box-shadow 0.2s',
+                }}
+                onFocus={e => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(255,55,95,0.1)'; }}
+                onBlur={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.boxShadow = 'none'; }}
+              />
             </div>
-            <button type="submit" disabled={loading} style={{ width: '100%', padding: '14px', background: 'var(--red)', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontFamily: 'var(--font-display)', fontSize: '1.1rem', letterSpacing: '0.1em', boxShadow: '0 0 24px rgba(255,45,59,0.3)', opacity: loading ? 0.7 : 1 }}>
-              {loading ? 'CONNECTING...' : '→ JOIN STUDIO'}
+            <button type="submit" disabled={loading} style={{
+              width: '100%', padding: '14px', background: 'var(--accent)', color: 'white',
+              border: 'none', borderRadius: 12, cursor: loading ? 'wait' : 'pointer',
+              fontFamily: 'var(--font)', fontSize: '0.95rem', fontWeight: 600,
+              transition: 'opacity 0.2s', opacity: loading ? 0.7 : 1,
+            }}>
+              {loading ? 'Connecting...' : 'Join Studio'}
             </button>
-            <button type="button" onClick={() => navigate('/dashboard')} style={{ width: '100%', padding: '13px', background: 'transparent', color: 'var(--muted)', border: '1px solid var(--border)', borderRadius: 6, cursor: 'pointer', fontFamily: 'var(--font-display)', fontSize: '0.85rem', letterSpacing: '0.08em', marginTop: '0.75rem' }}>
-              ← BACK
+            <button type="button" onClick={() => navigate('/dashboard')} style={{
+              width: '100%', padding: '13px', background: 'transparent',
+              color: 'var(--secondary)', border: '1px solid var(--border)',
+              borderRadius: 12, cursor: 'pointer', fontFamily: 'var(--font)',
+              fontSize: '0.85rem', fontWeight: 500, marginTop: '0.5rem',
+            }}>
+              ← Back
             </button>
           </form>
         </div>
