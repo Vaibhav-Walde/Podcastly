@@ -1,9 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import jwt, { JwtPayload } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
-
-const JWT_SECRET = process.env.JWT_SECRET || "";
 
 interface authRequest extends Request {
   userId?: string;
@@ -18,14 +16,15 @@ export async function authMiddleware(req: authRequest, res: Response, next: Next
   }
 
   const token = authHeader.split(" ")[1];
+  const secret = process.env.JWT_SECRET || "";
 
-  if (!JWT_SECRET) {
-    res.status(500).json({ msg: "Server configuration error: JWT secret not set" });
+  if (!secret) {
+    res.status(500).json({ msg: "Server configuration error" });
     return;
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET as string) as JwtPayload;
+    const decoded = jwt.verify(token, secret) as { userId: string };
     req.userId = String(decoded.userId);
     next();
   } catch (error) {
