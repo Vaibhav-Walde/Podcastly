@@ -178,7 +178,7 @@ export default function NSender() {
         setLoaderStopRecording(false);
         setIsRecording(false);
         // Poll for recordings as fallback
-        setTimeout(() => getAllVideos(), 3000);
+        setTimeout(() => getAllVideos(), 8000);
       }
     }
   }
